@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07111f">
+  <title>TRINETRA ESPORTS | TNR</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#07111f;color:#f4f8ff;font-family:Arial,sans-serif}
+    header{padding:22px 18px;border-bottom:1px solid #183451;display:flex;align-items:center;gap:12px}
+    .logo{width:48px;height:48px;border:2px solid #28bfff;border-radius:12px;display:grid;place-items:center;color:#28bfff;font-size:21px;font-weight:900}
+    h1{font-size:20px;margin:0;letter-spacing:1px}
+    header p{font-size:11px;color:#8ca9c6;margin:5px 0 0}
+    main{max-width:520px;margin:35px auto;padding:18px}
+    .hero{background:linear-gradient(145deg,#102743,#091525);border:1px solid #20476b;border-radius:20px;padding:25px 20px;text-align:center}
+    .tag{color:#31c2ff;font-size:12px;font-weight:bold;letter-spacing:2px}
+    h2{font-size:28px;margin:14px 0 10px}
+    .desc{color:#a9bdd2;font-size:14px;line-height:1.7}
+    button{width:100%;padding:14px;border:0;border-radius:10px;font-size:15px;font-weight:bold;cursor:pointer;margin-top:15px}
+    .primary{background:#27b9f5;color:#04111d}
+    .secondary{background:#172a40;color:#eaf6ff;border:1px solid #34516c}
+    .card{background:#0d1b2c;border:1px solid #1b3855;border-radius:15px;padding:18px;margin-top:18px}
+    .muted{color:#9bb0c6;font-size:13px;line-height:1.6}
+    .hidden{display:none}
+    .status{font-size:13px;color:#45cbff;margin-top:12px;overflow-wrap:anywhere}
+    footer{text-align:center;color:#668099;font-size:12px;padding:30px 15px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">TNR</div>
+    <div>
+      <h1>TRINETRA ESPORTS</h1>
+      <p>COMPETE • CONNECT • CONQUER</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="tag">OFFICIAL TOURNAMENT PORTAL</div>
+      <h2>YOUR GAME.<br>YOUR GLORY.</h2>
+      <p class="desc">Free Fire tournaments, team registration, slots and leaderboard — all in one place.</p>
+      <button id="loginBtn" class="primary">Continue with Google</button>
+      <p id="message" class="status">Sign in to get started.</p>
+    </section>
+
+    <section id="profile" class="card hidden">
+      <h3>Welcome to TNR!</h3>
+      <p class="muted">Signed-in account</p>
+      <p id="userName"></p>
+      <p id="userEmail" class="muted"></p>
+      <button id="logoutBtn" class="secondary">Sign Out</button>
+    </section>
+
+    <section class="card">
+      <h3>🏆 Tournaments</h3>
+      <p class="muted">Tournament announcements and registrations will appear here when the tournament system is connected.</p>
+    </section>
+
+    <section class="card">
+      <h3>🎮 Team Registration</h3>
+      <p class="muted">Register your squad and player details in the upcoming registration system.</p>
+    </section>
+
+    <section class="card">
+      <h3>📊 Leaderboard</h3>
+      <p class="muted">Placement points, kill points and tournament standings will appear here after the leaderboard is connected.</p>
+    </section>
+  </main>
+
+  <footer>© 2026 TRINETRA ESPORTS · TNR</footer>
+
+  <script type="module">
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import {
+      getAuth, GoogleAuthProvider, signInWithPopup,
+      onAuthStateChanged, signOut
+    } from
+      "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCskKKU5SmDx9Spyk7HiMec3xTk79Ytg1A",
+      authDomain: "trinetra-esports-686b9.firebaseapp.com",
+      projectId: "trinetra-esports-686b9",
+      storageBucket: "trinetra-esports-686b9.firebasestorage.app",
+      messagingSenderId: "348018667542",
+      appId: "1:348018667542:web:aa394e967068e7a3728537",
+      measurementId: "G-PS5CFQF2VR"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const message = document.getElementById("message");
+    const profile = document.getElementById("profile");
+
+    loginBtn.addEventListener("click", async () => {
+      message.textContent = "Opening Google sign-in...";
+      try {
+        await signInWithPopup(auth, provider);
+        message.textContent = "Google sign-in successful!";
+      } catch (error) {
+        console.error(error);
+        message.textContent = "Sign-in failed: " + error.code;
+      }
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        message.textContent = "Signed out successfully.";
+      } catch (error) {
+        message.textContent = "Sign-out failed: " + error.code;
+      }
+    });
+
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        profile.classList.remove("hidden");
+        document.getElementById("userName").textContent =
+          user.displayName || "TNR Player";
+        document.getElementById("userEmail").textContent =
+          user.email || "";
+        loginBtn.classList.add("hidden");
+        message.textContent = "You are signed in.";
+      } else {
+        profile.classList.add("hidden");
+        loginBtn.classList.remove("hidden");
+      }
+    });
+  </script>
+</body>
+</html>
